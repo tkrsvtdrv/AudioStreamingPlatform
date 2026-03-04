@@ -1,0 +1,28 @@
+﻿@model AudioStreamingPlatform.Models.DashboardViewModel
+
+<div class="container py-5">
+    <h1 class="mb-5 text-center" style="font-size:3rem;">🎵 Audio Platform Dashboard 🎶</h1>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card">
+                <h2>@Model.TotalArtists</h2>
+                <p>🔥 Artists</p>
+                <a class="btn mt-3" href="@Url.Action("Index", "Artists")">View Artists</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h2>@Model.TotalGenres</h2>
+                <p>🎸 Genres</p>
+                <a class="btn mt-3" href="@Url.Action("Index", "Genres")">View Genres</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h2>@Model.TotalSongs</h2>
+                <p>🎧 Songs</p>
+                <a class="btn mt-3" href="@Url.Action("Index", "Songs")">View Songs</a>
+            </div>
+        </div>
+    </div>
+</div>

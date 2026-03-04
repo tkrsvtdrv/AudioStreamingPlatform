@@ -1,0 +1,29 @@
+﻿@model IEnumerable<AudioStreamingPlatform.Models.Genre>
+
+<div class="container py-5">
+    <h1 class="mb-4">🎸 Genres</h1>
+    <p>
+        <a class="btn" href="@Url.Action("Create")">Create New Genre</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>
+                        <a class="btn" href="@Url.Action("Edit", new { id = item.Id })">Edit</a>
+                        <a class="btn" href="@Url.Action("Details", new { id = item.Id })">Details</a>
+                        <a class="btn btn-danger" href="@Url.Action("Delete", new { id = item.Id })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

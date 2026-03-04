@@ -1,0 +1,88 @@
+/* GLOBAL FORCE DARK MODE */
+* {
+    color: #ffffff !important;
+}
+
+/* BODY */
+body.app-dark {
+    background: #121212 !important;
+    color: #ffffff !important;
+}
+
+/* CONTAINERS */
+.container,
+.row,
+.col-md-4,
+.col-sm-2,
+.col-sm-10,
+div {
+    background-color: transparent !important;
+}
+
+    /* FORCE DARK PANELS */
+    .container.my-5,
+    .container.py-5,
+    .row > div,
+    form,
+    dl {
+        background-color: #1e1e1e !important;
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+/* INPUTS + SELECTS */
+input,
+select,
+textarea {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+    border: 1px solid #444 !important;
+}
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        background-color: #333 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.2rem #ff4e50 !important;
+    }
+
+/* TABLES */
+table {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+th, td {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+/* LINKS */
+a {
+    color: #ff4e50 !important;
+}
+
+    a:hover {
+        color: #ff914d !important;
+    }
+
+/* BUTTONS */
+.btn {
+    background-color: #ff4e50 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.btn-danger {
+    background-color: #b02a37 !important;
+}
+
+.btn-secondary {
+    background-color: #444 !important;
+}
+
+/* VALIDATION TEXT */
+.text-danger {
+    color: #ff4e50 !important;
+}
