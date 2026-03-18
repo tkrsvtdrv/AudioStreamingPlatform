@@ -9,13 +9,16 @@ namespace AudioStreamingPlatform.Models
         [Required]
         public string Title { get; set; } = null!;
 
+        [Required]
         public int ArtistId { get; set; }
 
-        [Required]
-        public Artist Artist { get; set; } = null!;
+        public Artist? Artist { get; set; }
 
+        [Required]
         public TimeSpan Duration { get; set; }
 
+        [Required]
         public DateTime ReleaseDate { get; set; }
     }
 }
+//asddasasdadasdsadsdaadsadsdsadssds

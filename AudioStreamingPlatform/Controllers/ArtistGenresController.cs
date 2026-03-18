@@ -21,16 +21,21 @@ namespace AudioStreamingPlatform.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Artist Genres";
+
             var artistGenres = _context.ArtistGenres
                 .Include(ag => ag.Artist)
                 .Include(ag => ag.Genre);
+
             return View(await artistGenres.ToListAsync());
         }
 
-        // GET: ArtistGenres/Details/5
+        // GET: ArtistGenres/Details
         public async Task<IActionResult> Details(int? artistId, int? genreId)
         {
-            if (artistId == null || genreId == null) return NotFound();
+            if (artistId == null || genreId == null)
+            {
+                return NotFound();
+            }
 
             ViewData["Title"] = "Artist Genre Details";
 
@@ -39,7 +44,11 @@ namespace AudioStreamingPlatform.Controllers
                 .Include(ag => ag.Genre)
                 .FirstOrDefaultAsync(ag => ag.ArtistId == artistId && ag.GenreId == genreId);
 
-            if (artistGenre == null) return NotFound();
+            if (artistGenre == null)
+            {
+                return NotFound();
+            }
+
             return View(artistGenre);
         }
 
@@ -59,10 +68,20 @@ namespace AudioStreamingPlatform.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(artistGenre);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                bool exists = await _context.ArtistGenres
+                    .AnyAsync(ag => ag.ArtistId == artistGenre.ArtistId && ag.GenreId == artistGenre.GenreId);
+
+                if (!exists)
+                {
+                    _context.ArtistGenres.Add(artistGenre);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ModelState.AddModelError("", "This artist-genre relation already exists.");
             }
+
+            ViewData["Title"] = "Add Artist Genre";
             ViewData["ArtistId"] = new SelectList(_context.Artists, "Id", "Title", artistGenre.ArtistId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Title", artistGenre.GenreId);
             return View(artistGenre);
@@ -71,14 +90,20 @@ namespace AudioStreamingPlatform.Controllers
         // GET: ArtistGenres/Edit
         public async Task<IActionResult> Edit(int? artistId, int? genreId)
         {
-            if (artistId == null || genreId == null) return NotFound();
+            if (artistId == null || genreId == null)
+            {
+                return NotFound();
+            }
 
             ViewData["Title"] = "Edit Artist Genre";
 
             var artistGenre = await _context.ArtistGenres
                 .FirstOrDefaultAsync(ag => ag.ArtistId == artistId && ag.GenreId == genreId);
 
-            if (artistGenre == null) return NotFound();
+            if (artistGenre == null)
+            {
+                return NotFound();
+            }
 
             ViewData["ArtistId"] = new SelectList(_context.Artists, "Id", "Title", artistGenre.ArtistId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Title", artistGenre.GenreId);
@@ -88,24 +113,44 @@ namespace AudioStreamingPlatform.Controllers
         // POST: ArtistGenres/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ArtistId,GenreId")] ArtistGenre artistGenre)
+        public async Task<IActionResult> Edit(int originalArtistId, int originalGenreId, [Bind("ArtistId,GenreId")] ArtistGenre artistGenre)
         {
-            if (!ArtistGenreExists(artistGenre.ArtistId, artistGenre.GenreId)) return NotFound();
+            if (!ArtistGenreExists(originalArtistId, originalGenreId))
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(artistGenre);
+                    var existingArtistGenre = await _context.ArtistGenres
+                        .FirstOrDefaultAsync(ag => ag.ArtistId == originalArtistId && ag.GenreId == originalGenreId);
+
+                    if (existingArtistGenre == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingArtistGenre.ArtistId = artistGenre.ArtistId;
+                    existingArtistGenre.GenreId = artistGenre.GenreId;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArtistGenreExists(artistGenre.ArtistId, artistGenre.GenreId)) return NotFound();
-                    else throw;
+                    if (!ArtistGenreExists(artistGenre.ArtistId, artistGenre.GenreId))
+                    {
+                        return NotFound();
+                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["Title"] = "Edit Artist Genre";
             ViewData["ArtistId"] = new SelectList(_context.Artists, "Id", "Title", artistGenre.ArtistId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Title", artistGenre.GenreId);
             return View(artistGenre);
@@ -114,7 +159,10 @@ namespace AudioStreamingPlatform.Controllers
         // GET: ArtistGenres/Delete
         public async Task<IActionResult> Delete(int? artistId, int? genreId)
         {
-            if (artistId == null || genreId == null) return NotFound();
+            if (artistId == null || genreId == null)
+            {
+                return NotFound();
+            }
 
             ViewData["Title"] = "Delete Artist Genre";
 
@@ -123,7 +171,11 @@ namespace AudioStreamingPlatform.Controllers
                 .Include(ag => ag.Genre)
                 .FirstOrDefaultAsync(ag => ag.ArtistId == artistId && ag.GenreId == genreId);
 
-            if (artistGenre == null) return NotFound();
+            if (artistGenre == null)
+            {
+                return NotFound();
+            }
+
             return View(artistGenre);
         }
 
@@ -135,8 +187,12 @@ namespace AudioStreamingPlatform.Controllers
             var artistGenre = await _context.ArtistGenres
                 .FirstOrDefaultAsync(ag => ag.ArtistId == artistId && ag.GenreId == genreId);
 
-            if (artistGenre != null) _context.ArtistGenres.Remove(artistGenre);
-            await _context.SaveChangesAsync();
+            if (artistGenre != null)
+            {
+                _context.ArtistGenres.Remove(artistGenre);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
